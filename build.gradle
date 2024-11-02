@@ -12,6 +12,14 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'com.microsoft.playwright:playwright:1.48.0'
+
+}
+
+// Usage: ./gradlew playwright --args="help"
+task playwright(type: JavaExec) {
+    classpath sourceSets.test.runtimeClasspath
+    mainClass = 'com.microsoft.playwright.CLI'
 }
 
 test {
