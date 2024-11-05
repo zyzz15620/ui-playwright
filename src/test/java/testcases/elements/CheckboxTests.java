@@ -1,12 +1,13 @@
 package testcases.elements;
 
-import com.microsoft.playwright.*;
-import org.junit.jupiter.api.*;
+import com.microsoft.playwright.Locator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ButtonTests extends BaseTest {
+public class CheckboxTests extends BaseTest {
     Locator pageHeader;
     Locator clickedButton;
     Locator buttons;
