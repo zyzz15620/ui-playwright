@@ -3,6 +3,8 @@ package testcases.elements;
 import com.microsoft.playwright.Locator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,12 +20,8 @@ class CheckboxTests extends BaseTest {
         context = browser.newContext();
         page = context.newPage();
         page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/elements/checkbox");
-
         pageHeader = page.locator("//span[contains(concat(' ', normalize-space(@class), ' '), 'ant-divider-inner-text')][contains(text(), 'Checkbox')]");
-        checkedCheckboxText = page.locator("//div[contains(text(), 'Selected values:')]//span[contains(concat(' ',normalize-space(@class),' '),' text-rose-500 ')]");
-        allCheckbox = page.locator("//div[contains(concat(' ',normalize-space(@class),' '),' ant-checkbox-group css-vryruh ')]/*//input[@type='checkbox']");
         allCheckboxText = page.locator("//div[contains(concat(' ',normalize-space(@class),' '),' ant-checkbox-group css-vryruh ')]/*//span[text()]");
-
     }
 
     @Test
@@ -32,48 +30,37 @@ class CheckboxTests extends BaseTest {
         assertThat(pageHeader).isVisible();
     }
 
-    @Test
-    void verifyFirstIsCheckedByDefault(){
-        for(int i = 0; i < allCheckbox.count(); i++ ){
-            if(i == 0) {
-                assertThat(allCheckbox.nth(0)).isChecked();
-            } else {
-                assertThat(allCheckbox.nth(i)).not().isChecked();
-            }
-        }
-    }
 
-    @Test
-    void verifyEachCheckbox(){
-        String actual;
-        String expect;
+    void uncheckAll(){
+        allCheckbox = page.locator("//div[contains(concat(' ',normalize-space(@class),' '),' ant-checkbox-group css-vryruh ')]/*//input[@type='checkbox']");
         for(int i = 0; i < allCheckbox.count(); i++ ){
-            allCheckbox.nth(i).uncheck();
-            allCheckbox.nth(i).check();
-            expect = allCheckboxText.nth(i).innerText();
-            actual = checkedCheckboxText.textContent().replace("\u00A0", "").trim();
-            assertEquals(expect, actual);
             allCheckbox.nth(i).uncheck();
         }
     }
 
-    @Test
-    void verifyMultipleCheckbox(){
-        String actual = "";
-        String expect = "";
-        allCheckbox.nth(0).uncheck();
-
-        for(int i = 0; i < allCheckbox.count(); i++ ){
-            allCheckbox.nth(i).check();
-            expect = expect + " " + allCheckboxText.nth(i).innerText();
-            if(checkedCheckboxText.count() >= 1){
-                for(int j = 0; j < checkedCheckboxText.count(); j++ ){
-                    actual = actual + " " + checkedCheckboxText.nth(j).innerText().replace("\u00A0", "").trim();
-                }
-            }
-            assertEquals(expect, actual);
-            System.out.println(expect + " =" +actual);
-            actual = "";
+    void selectCheckboxWithLabel(String label){
+        String checkBoxXpath = String.format("//label[contains(., '%s')]", label);
+        Locator checkbox = page.locator(checkBoxXpath);
+        if(!checkbox.isChecked()){
+            checkbox.setChecked(true);
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Apple", "Pear", "Orange"})
+    void verifyEachCheckbox(String expect){
+        uncheckAll();
+        selectCheckboxWithLabel(expect);
+        checkedCheckboxText = page.locator("//div[contains(.//text(), 'Selected values:')]");
+        assertThat(checkedCheckboxText).hasText(String.format("Selected values: %s", expect));
+    }
+
+    @Test
+    void verifyAllCheckbox(){
+        selectCheckboxWithLabel("Apple");
+        selectCheckboxWithLabel("Pear");
+        selectCheckboxWithLabel("Orange");
+        checkedCheckboxText = page.locator("//div[contains(.//text(), 'Selected values:')]");
+        assertThat(checkedCheckboxText).hasText("Selected values: Apple Pear Orange");
     }
 }
