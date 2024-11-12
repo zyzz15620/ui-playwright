@@ -5,9 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.ArrayList;
-import java.util.List;
+import testcases.BaseTest;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,6 +35,7 @@ class RadioTests extends BaseTest {
         Locator result = page.locator("//div[normalize-space(text())=\"Value:\"][1]");
 
         button.check();
+
         assertThat(result).hasText(String.format("Value: %s", inputData));
         assertTrue(onlyOneButtonIsChecked(buttons));
     }

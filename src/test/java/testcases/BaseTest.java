@@ -1,16 +1,15 @@
-package testcases.elements;
+package testcases;
 
 import com.microsoft.playwright.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 
 public class BaseTest {
-    static Playwright playwright;
-    static Browser browser;
-    BrowserContext context;
-    Page page;
+    public static Playwright playwright;
+    public static Browser browser;
+    public static BrowserContext context;
+    public static Page page;
 
     @BeforeAll
     static void launchBrowser() {
