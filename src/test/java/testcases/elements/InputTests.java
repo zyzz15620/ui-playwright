@@ -26,7 +26,8 @@ class InputTests extends BaseTest {
     @ValueSource(strings = {"Apple"})
     void verifyNormalInput(String inputData){
         Locator normalInput = page.locator("//input[normalize-space(@placeholder)=\"Hello!\"]");
-        Locator result = page.locator("//div[.//text()[normalize-space() = \"Normal Input\"]][@role=\"separator\"]//following-sibling::div[contains(text(), \"Value:\")][1]");
+        Locator result = page.locator("//div[.//text()[normalize-space() = \"Normal Input\"]][@role=\"separator\"]" +
+                "//following-sibling::div[contains(text(), \"Value:\")][1]");
 
         normalInput.fill(inputData);
         assertThat(result).hasText(String.format("Value: %s", inputData));
@@ -36,7 +37,8 @@ class InputTests extends BaseTest {
     @ValueSource(strings = {"Apple"})
     void verifyTextArea(String inputData){
         Locator textArea = page.locator("//textarea[normalize-space(@placeholder)=\"Test with me!\"]");
-        Locator result = page.locator("//div[.//text()[normalize-space() = \"Text Area\"]][@role=\"separator\"]//following-sibling::div[contains(text(), \"Value:\")][1]");
+        Locator result = page.locator("//div[.//text()[normalize-space() = \"Text Area\"]][@role=\"separator\"]" +
+                "//following-sibling::div[contains(text(), \"Value:\")][1]");
 
         textArea.fill(inputData);
         assertThat(result).hasText(String.format("Value: %s", inputData));
@@ -44,19 +46,23 @@ class InputTests extends BaseTest {
 
     @ParameterizedTest
     @ValueSource(ints = {2})
-    void verifyInputNumber(Integer inputData){
+    void verifyInputNumber(Integer inputData){ //Lý do ko nhấn được là phải hover trước rồi mới nhấn
         Integer number = inputData;
         Locator inputNumber = page.locator("//input[normalize-space(@role)=\"spinbutton\"]");
         Locator increaseButton = page.locator("//span[@aria-label=\"Increase Value\"]");
         Locator decreaseButton = page.locator("//span[@aria-label=\"Decrease Value\"]");
-        Locator result = page.locator("//div[.//text()[normalize-space() = \"Input Number\"]][@role=\"separator\"]//following-sibling::div[contains(text(), \"Value:\")][1]");
+        Locator result = page.locator("//div[.//text()[normalize-space() = \"Input Number\"]][@role=\"separator\"]" +
+                "//following-sibling::div[contains(text(), \"Value:\")][1]");
 
         inputNumber.fill(String.valueOf(number));
         assertThat(result).hasText(String.format("Value: %d", number));
 
         inputNumber.press("ArrowUp");
+        number = number + 5;
+        assertThat(result).hasText(String.format("Value: %d", number));
+
         inputNumber.press("ArrowUp");
-        number = number + 10;
+        number = number + 5;
         assertThat(result).hasText(String.format("Value: %d", number));
 
         inputNumber.press("ArrowDown");
@@ -80,11 +86,12 @@ class InputTests extends BaseTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {222222})
+    @ValueSource(ints = {123456}) // nên dùng string vì nhỡ số 0 đứng đầu thì sao? với lại nên dùng loop vì ở đây may mắn
     void verifyOtpBox(Integer inputData) {
         Integer number = inputData;
         Locator otpBox = page.locator("(//div[contains(.//text(), \"OTP Box\")]//following-sibling::div//input[@type=\"text\"])[1]");
-        Locator result = page.locator("//div[.//text()[normalize-space() = \"OTP Box\"]][@role=\"separator\"]//following-sibling::div[contains(text(), \"Value:\")][1]");
+        Locator result = page.locator("//div[.//text()[normalize-space() = \"OTP Box\"]][@role=\"separator\"]" +
+                "//following-sibling::div[contains(text(), \"Value:\")][1]");
         otpBox.fill(String.valueOf(inputData));
         assertThat(result).hasText(String.format("Value: %d", number));
     }
