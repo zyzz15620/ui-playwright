@@ -38,6 +38,8 @@ class RadioTests extends BaseTest {
 
         assertThat(result).hasText(String.format("Value: %s", inputData));
         assertTrue(onlyOneButtonIsChecked(buttons));
+
+
     }
 
     boolean onlyOneButtonIsChecked(Locator buttons){

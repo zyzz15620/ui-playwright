@@ -14,15 +14,11 @@ import java.util.List;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 class CascaderTests extends BaseTest {
-    @BeforeEach
-    void createContextAndPage() {
-        context = browser.newContext();
-        page = context.newPage();
-        page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/components/cascader");
-    }
+
 
     @Test
     void verifyCascader(){ //bài này hay dùng nhiều ở các menu nhiều tầng như fptshop
+        page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/components/cascader");
         String inputs = "Test, With, Me";
 
         String cascaderXpath = "//div[normalize-space(.//text())='Cascader']//following::input[contains(concat(' ',normalize-space(@class),' '),' ant-select-selection-search-input ')][1]";

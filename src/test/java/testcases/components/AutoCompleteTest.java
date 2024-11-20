@@ -1,22 +1,15 @@
 package testcases.components;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import testcases.BaseTest;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static testcases.BaseTest.browser;
 
 class AutoCompleteTest extends BaseTest {
-    @BeforeEach
-    void createContextAndPage() {
-        context = browser.newContext();
-        page = context.newPage();
-        page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/components/auto-complete");
-    }
 
     @Test
     void verifyAutoComplete(){
+        page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/components/auto-complete");
         assertThat(page).hasTitle("Test With Me aka Tho Test");
         assertThat(page.locator("//span[normalize-space(text())=\"Auto complete\"]")).isVisible();
 

@@ -8,15 +8,9 @@ import testcases.BaseTest;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 class SliderTests extends BaseTest {
-    @BeforeEach
-    void createContextAndPage() {
-        context = browser.newContext();
-        page = context.newPage();
-        page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/components/slider");
-    }
-
     @Test
     void verifySlider(){
+        page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/components/slider");
         String sliderBarXpath = "//div[contains(concat(' ',normalize-space(@class),' '),' ant-slider-rail ')]";
         String expectedLabelXpath = "//div[contains(text(), 'Current Value: ') and ./span[contains(concat(' ', normalize-space(@class),' '),' text-rose-500 ')]]";
 

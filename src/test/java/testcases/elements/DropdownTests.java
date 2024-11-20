@@ -11,16 +11,11 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DropdownTests extends BaseTest {
-    @BeforeEach
-    void createContextAndPage() {
-        context = browser.newContext();
-        page = context.newPage();
-        page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/elements/dropdown");
-
-    }
+    String url = "https://test-with-me-app.vercel.app/learning/web-elements/elements/dropdown";
 
     @Test
     void verifyNavigateSuccess() {
+        page.navigate(url);
         Locator pageHeader = page.locator("//span[contains(concat(' ', normalize-space(@class), ' '), 'ant-divider-inner-text')][contains(text(), 'Dropdown')]");
         assertThat(page).hasTitle("Test With Me aka Tho Test");
         assertThat(pageHeader).isVisible();
@@ -29,6 +24,7 @@ class DropdownTests extends BaseTest {
     @ParameterizedTest
     @ValueSource(strings = "1st menu item")
     void verifyRadio1(String inputData){
+        page.navigate(url);
         String buttonXpath = String.format("//li[contains(concat(' ',normalize-space(@class),' '),' ant-dropdown-menu-item ')][.//text()[normalize-space()=\"%s\"]]", inputData);
         Locator option = page.locator(buttonXpath);
         Locator hoverButton = page.locator("//button[.//span[@aria-label=\"ellipsis\"]]");

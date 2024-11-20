@@ -18,15 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DateTimeTests extends BaseTest {
     String timeXpath ="//ul[contains(concat(' ',normalize-space(@class),' '),' ant-picker-time-panel-column ')][@data-type=\"%s\"]//li[@data-value=\"%d\"]";
-    @BeforeEach
-    void createContextAndPage() {
-        context = browser.newContext();
-        page = context.newPage();
-        page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/elements/date-time");
-    }
+    String url = "https://test-with-me-app.vercel.app/learning/web-elements/elements/date-time";
 
     @Test
     void verifyNavigateSuccess() {
+        page.navigate(url);
         assertThat(page).hasTitle("Test With Me aka Tho Test");
         assertThat(page.locator("//span[normalize-space(text())=\"Time Picker\"]")).isVisible();
     }
@@ -40,6 +36,7 @@ class DateTimeTests extends BaseTest {
     @ParameterizedTest
     @MethodSource("timeProvider")
     void verifyTimePicker(int hour, int min, int sec){
+        page.navigate(url);
         Locator input = page.locator("//input[@placeholder=\"Select time\"]");
         Locator hourOptions = page.locator(String.format(timeXpath, "hour" , hour));
         Locator minuteOptions = page.locator(String.format(timeXpath, "minute" , min));
@@ -57,6 +54,7 @@ class DateTimeTests extends BaseTest {
 
     @Test
     void verifyNowButton() {
+        page.navigate(url);
         Locator input = page.locator("//input[@placeholder=\"Select time\"]");
         Locator nowButton = page.locator("//a[normalize-space(text())=\"Now\"]");
         Locator result = page.locator("//div[text()[normalize-space()=\"Current time:\"]]");
