@@ -11,11 +11,11 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 class CheckboxTests extends BaseTest {
     String url = "https://test-with-me-app.vercel.app/learning/web-elements/elements/checkbox";
     String checkedCheckboxTextXpath = "//div[contains(.//text(), 'Selected values:')]";
-    String pageHeader = "//span[contains(concat(' ', normalize-space(@class), ' '), 'ant-divider-inner-text')][contains(text(), 'Checkbox')]";
 
     @Test
     void verifyNavigateSuccess() {
         page.navigate(url);
+        String pageHeader = "//span[contains(concat(' ', normalize-space(@class), ' '), 'ant-divider-inner-text')][contains(text(), 'Checkbox')]";
         assertThat(page).hasTitle("Test With Me aka Tho Test");
         assertThat(page.locator(pageHeader)).isVisible();
     }

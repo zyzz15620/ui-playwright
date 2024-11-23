@@ -57,15 +57,18 @@ class InputTests extends BaseTest {
         inputNumber.fill(String.valueOf(number));
         assertThat(result).hasText(String.format("Value: %d", number));
 
-        inputNumber.press("ArrowUp");
+        inputNumber.hover();
+        increaseButton.click();
         number = number + 5;
         assertThat(result).hasText(String.format("Value: %d", number));
 
-        inputNumber.press("ArrowUp");
+        inputNumber.hover();
+        increaseButton.click();
         number = number + 5;
         assertThat(result).hasText(String.format("Value: %d", number));
 
-        inputNumber.press("ArrowDown");
+        inputNumber.hover();
+        decreaseButton.click();
         number = number - 5;
         assertThat(result).hasText(String.format("Value: %d", number));
     }
@@ -79,10 +82,12 @@ class InputTests extends BaseTest {
         Locator eyeToggle = page.locator("//span[contains(concat(' ',normalize-space(@class),' '),' ant-input-suffix ')]");
 
         passwordBox.fill(inputData);
-        assertThat(result).hasText(String.format("Value: %s", inputData));
 
+        assertThat(result).hasText(String.format("Value: %s", inputData));
         assertThat(passwordBox).hasAttribute("type", "password");
+
         eyeToggle.click();
+
         assertThat(passwordBox).hasAttribute("type", "text");
     }
 

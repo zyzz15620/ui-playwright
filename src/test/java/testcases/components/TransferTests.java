@@ -11,29 +11,33 @@ class TransferTests extends BaseTest {
     @Test
     void verifyTransfer(){
         page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/components/transfer");
-        String itemXpath = "//li[contains(concat(' ',normalize-space(@class),' '),' ant-transfer-list-content-item ') and normalize-space(.//text())='%s']";
 
+        //move to right
         String[] inputs  = {"Apple", "Banana"};
-        for (String input : inputs){
-            page.locator(String.format(itemXpath, input)).click();
-        }
-        String moveToRightXpath = "//div[contains(concat(' ',normalize-space(@class),' '),' ant-transfer-operation ')]//button[.//span[@aria-label='right']]";
-        page.locator(moveToRightXpath).click();
+        moveItemToPanel(inputs, "right");
+        //Get actual and prepare expected for assertion
         String itemsInRightPanel = "//span[contains(concat(' ',normalize-space(@class),' '),' ant-transfer-list-header-title ') and normalize-space(text())='Target']/..//following-sibling::div//li[contains(concat(' ',normalize-space(@class),' '),' ant-transfer-list-content-item ')]";
         String[] rightItems = page.locator(itemsInRightPanel).allInnerTexts().toArray(new String[0]);
         String[] rightPanelExpected = {"Apple", "Banana", "Orange", "Pineapple", "Strawberry"};
         assertArrayEquals(rightItems, rightPanelExpected);
 
+        //move back to left
         String[] moveToLeftInputs  = {"Apple", "Banana"};
-        for (String input : moveToLeftInputs){
-            page.locator(String.format(itemXpath, input)).click();
-        }
-        String moveToLeftXpath = "//div[contains(concat(' ',normalize-space(@class),' '),' ant-transfer-operation ')]//button[.//span[@aria-label='left']]";
-        page.locator(moveToLeftXpath).click();
+        moveItemToPanel(moveToLeftInputs, "left");
+        //Get actual and prepare expected for assertion
         String itemsInLeftPanel = "//span[contains(concat(' ',normalize-space(@class),' '),' ant-transfer-list-header-title ') and normalize-space(text())='Source']/..//following-sibling::div//li[contains(concat(' ',normalize-space(@class),' '),' ant-transfer-list-content-item ')]";
         String[] leftItems = page.locator(itemsInLeftPanel).allInnerTexts().toArray(new String[0]);
         String[] leftPanelExpected = {"Apple", "Banana", "Kiwi"};
         assertArrayEquals(leftItems, leftPanelExpected);
+    }
 
+    void moveItemToPanel(String[] inputs, String side){
+        //side = 'left' or 'right'
+        String itemXpath = "//li[contains(concat(' ',normalize-space(@class),' '),' ant-transfer-list-content-item ') and normalize-space(.//text())='%s']";
+        for(String input : inputs){
+            page.locator(String.format(itemXpath, input)).click();
+        }
+        String moveToPanelXpath = String.format("//div[contains(concat(' ',normalize-space(@class),' '),' ant-transfer-operation ')]//button[.//span[@aria-label='%s']]", side);
+        page.locator(moveToPanelXpath).click();
     }
 }
