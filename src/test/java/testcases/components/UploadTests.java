@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 class UploadTests extends BaseTest {
     @Test
-    void verifyUploadFile() throws InterruptedException {
+    void verifyUploadFile() {
         page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/components/upload");
         String input = "image1.png, image2.png, JMeter_QuickStart_Guide.pdf";
         ArrayList<String> inputUploadListLabel = new ArrayList<>(Arrays.asList(input.split(",\\s*")));
@@ -31,6 +31,7 @@ class UploadTests extends BaseTest {
         //Get actual upload list and Assert
         String actualUploadListXpath = "//div[contains(concat(' ',normalize-space(@class),' '),' ant-upload-list ')]//span[contains(concat(' ',normalize-space(@class),' '),' ant-upload-list-item-name ')]";
         Locator actualUploadList = page.locator(actualUploadListXpath);
+        int initialCount = actualUploadList.count();
         String[] actualUploadListLabel = actualUploadList.allInnerTexts().toArray(new String[0]);
         assertArrayEquals(inputUploadListLabel.toArray(), actualUploadListLabel);
 
@@ -41,9 +42,8 @@ class UploadTests extends BaseTest {
         inputUploadListLabel.remove(itemToDelete-1);
 
         //DOM need time to refresh
-        Thread.sleep(1000);
+        page.waitForCondition(() -> actualUploadList.count() < initialCount);
         String[] actualUploadListLabelAfterDelete = actualUploadList.allInnerTexts().toArray(new String[0]);
-
         assertArrayEquals(inputUploadListLabel.toArray(), actualUploadListLabelAfterDelete);
     }
 }
