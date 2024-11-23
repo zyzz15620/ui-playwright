@@ -44,11 +44,5 @@ class TableTests extends BaseTest {
         page.locator(paginationXpath).nth(numberOfPage-1).click();
         String[] addressListLastPage = addresses.allInnerTexts().toArray(new String[0]);
         assertFalse(Arrays.equals(addressList, addressListLastPage));
-
-
-        System.out.println(Arrays.toString(addressList));
-        System.out.println(Arrays.toString(addressListLastPage));
-        System.out.println(Arrays.toString(columnsLabelList));
-        System.out.println(Arrays.toString(expectedColumnsLabelList));
     }
 }
