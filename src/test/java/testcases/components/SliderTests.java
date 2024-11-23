@@ -1,7 +1,6 @@
 package testcases.components;
 
 import com.microsoft.playwright.Locator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import testcases.BaseTest;
 

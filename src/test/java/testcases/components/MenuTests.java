@@ -1,10 +1,7 @@
 package testcases.components;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import testcases.BaseTest;
-
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 class MenuTests extends BaseTest {
     @Test

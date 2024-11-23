@@ -6,7 +6,6 @@ import testcases.BaseTest;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 class AutoCompleteTest extends BaseTest {
-
     @Test
     void verifyAutoComplete(){
         page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/components/auto-complete");

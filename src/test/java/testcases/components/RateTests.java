@@ -1,8 +1,6 @@
 package testcases.components;
 
 import com.microsoft.playwright.Locator;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -11,6 +9,7 @@ import testcases.BaseTest;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 class RateTests extends BaseTest {
+    String url = "https://test-with-me-app.vercel.app/learning/web-elements/components/rating";
     @ParameterizedTest
     @CsvSource({
             "1, terrible",
@@ -20,7 +19,7 @@ class RateTests extends BaseTest {
             "5, wonderful"
     })
     void verifyRatingFullStar(int input, String expectedOutput){
-        page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/components/rating");
+        page.navigate(url);
         assertThat(page).hasTitle("Test With Me aka Tho Test");
         assertThat(page.locator("//span[normalize-space(text())=\"Rate\"]")).isVisible();
         String starXpath = String.format("//ul[@role='radiogroup'][1]//div[@aria-posinset='%d']", input);
@@ -41,7 +40,7 @@ class RateTests extends BaseTest {
     @ParameterizedTest
     @ValueSource(floats = {0.5f, 1, 1.5f, 2, 2.5f, 3, 3.5f, 4, 4.5f, 5})
     void verifyRatingHalfStar(float input){
-        page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/components/rating");
+        page.navigate(url);
         assertThat(page).hasTitle("Test With Me aka Tho Test");
         assertThat(page.locator("//span[normalize-space(text())=\"Rate\"]")).isVisible();
         boolean isHalf = input < Math.ceil(input);

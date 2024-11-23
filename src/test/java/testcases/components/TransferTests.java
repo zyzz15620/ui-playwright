@@ -1,10 +1,8 @@
 package testcases.components;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import testcases.BaseTest;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 class TransferTests extends BaseTest {

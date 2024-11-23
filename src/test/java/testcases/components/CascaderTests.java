@@ -1,21 +1,10 @@
 package testcases.components;
 
-import com.microsoft.playwright.Locator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import testcases.BaseTest;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 class CascaderTests extends BaseTest {
-
-
     @Test
     void verifyCascader(){ //bài này hay dùng nhiều ở các menu nhiều tầng như fptshop
         page.navigate("https://test-with-me-app.vercel.app/learning/web-elements/components/cascader");

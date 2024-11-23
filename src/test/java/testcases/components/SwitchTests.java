@@ -1,7 +1,6 @@
 package testcases.components;
 
 import com.microsoft.playwright.Locator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import testcases.BaseTest;
 
@@ -15,7 +14,7 @@ class SwitchTests extends BaseTest {
         Locator switchButton = page.locator(switchButtonXpath);
         String expectedLabelXpath = "//div[contains(., 'Current Value: ') and ./span[contains(concat(' ', normalize-space(@class),' '),' text-rose-500 ')]]";
         boolean input = false;
-        if(Boolean.valueOf(switchButton.getAttribute("aria-checked")) != input){
+        if(Boolean.parseBoolean(switchButton.getAttribute("aria-checked")) != input){
             switchButton.click();
         }
         assertThat(page.locator(expectedLabelXpath)).hasText(String.format("Current Value: %s", input));
