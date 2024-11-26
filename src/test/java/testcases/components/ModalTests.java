@@ -2,6 +2,7 @@ package testcases.components;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import testcases.BaseTest;
 
@@ -19,8 +20,11 @@ class ModalTests extends BaseTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"Yes", "No"})
-    void verifyTable(String input) {
+    @CsvSource({
+            "Yes, OK",
+            "No, CANCEL"
+    })
+    void verifyModal(String input, String expected) {
         page.navigate(url);
         String showConfirmXpath = "//button[span[normalize-space(text())='Show Confirm']]";
         page.locator(showConfirmXpath).click();
@@ -29,7 +33,6 @@ class ModalTests extends BaseTest {
         page.locator(optionXpath).click();
 
         String actualLabelXpath = "//div[contains(., 'Status:')][span[contains(concat(' ', normalize-space(@class), ' '), ' text-rose-500 ')]]";
-        assertThat(page.locator(actualLabelXpath)).hasText(String.format("Status: %s", input.equals("Yes")? "OK": input.equals("No")? "CANCEL" : ""));
-        System.out.println();
+        assertThat(page.locator(actualLabelXpath)).hasText(String.format("Status: %s", expected));
     }
 }
