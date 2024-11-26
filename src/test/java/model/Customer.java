@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,7 +17,19 @@ public class Customer {
     private String address;
     private String age;
     private String tags;
-    private String actions;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return Objects.equals(name, customer.name) && Objects.equals(address, customer.address) && Objects.equals(age, customer.age) && Objects.equals(tags, customer.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, address, age, tags);
+    }
 
     @Override
     public String toString() {
@@ -25,7 +38,6 @@ public class Customer {
                 ", address='" + address + '\'' +
                 ", age='" + age + '\'' +
                 ", tags='" + tags + '\'' +
-                ", actions='" + actions + '\'' +
                 '}';
     }
 }
