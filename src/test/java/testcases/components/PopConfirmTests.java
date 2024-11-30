@@ -27,5 +27,7 @@ class PopConfirmTests extends BaseTest {
         String optionXpath = String.format("//div[contains(concat(' ',normalize-space(@class),' '),' ant-popconfirm-inner-content ') and .//div[normalize-space(text())='Delete the task']]" +
                 "//button[.//text()[normalize-space()='%s']]", input);
         page.locator(optionXpath).click();
+
+        assertThat(page.locator("//div[contains(concat(' ',normalize-space(@class),' '),' ant-message-notice-content ')]")).hasText(String.format("Click on %s", input));
     }
 }
