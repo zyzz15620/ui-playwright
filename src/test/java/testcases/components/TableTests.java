@@ -8,6 +8,7 @@ import model.Customer;
 import org.junit.jupiter.api.Test;
 import testcases.BaseTest;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -105,7 +106,7 @@ class TableTests extends BaseTest {
     }
 
     @Test
-    void verifyTable2ndWay() throws InterruptedException, JsonProcessingException {
+    void verifyTable2ndWay() throws InterruptedException, JsonProcessingException, NoSuchFieldException, IllegalAccessException {
         page.navigate(url);
         Thread.sleep(2000);
         String tableXpath = "(//div[.//text()[normalize-space()='Table']]//following::table)[1]";  //This is just to make sure if there are 2 tables, this is better than the 1st way above
@@ -120,6 +121,7 @@ class TableTests extends BaseTest {
             List<Locator> rowLocators = page.locator(rowsXpath).all();
             for (Locator row : rowLocators) {
                 Customer customer = new Customer();
+//
 //                int indexOfName = Arrays.asList(headerList).indexOf("Name");
 //                String cellNameLocator = String.format("//td[contains(concat(' ',normalize-space(@class),' '),' ant-table-cell ')][%d]", indexOfName + 1);
 //                String name = row.locator(cellNameLocator).textContent();
@@ -140,28 +142,20 @@ class TableTests extends BaseTest {
 //                String tags = row.locator(cellTagsLocator).textContent();
 //                customer.setTags(tags);
 
+
+                //headerList remove Action pls
                 for(String header : headerList){
+                    Field field = Customer.class.getDeclaredField(header.toLowerCase());
+                    field.setAccessible(true);  //because the attribute of Customer is private
                     int indexOfHeader = Arrays.asList(headerList).indexOf(header);
                     String headerXpath = String.format("//td[contains(concat(' ',normalize-space(@class),' '),' ant-table-cell ')][%d]", indexOfHeader + 1);
                     String headerValue = row.locator(headerXpath).textContent();
-                    switch (header){
-                        case "Name":
-                            customer.setName(headerValue);
-                            break;
-                        case "Age":
-                            customer.setAge(Integer.parseInt(headerValue));
-                            break;
-                        case "Address":
-                            customer.setAddress(headerValue);
-                            break;
-                        case "Tags":
-                            customer.setTags(headerValue);
-                            break;
-                        default:
-                            break;
+                    if("Age".equals(headerValue)){
+                        field.set(customer, Integer.parseInt(headerValue));
+                    } else {
+                        field.set(customer, headerValue);
                     }
                 }
-
                 actualCustomer.add(customer);
             }
             Locator nextButton = page.locator(nextButtonXpath);
