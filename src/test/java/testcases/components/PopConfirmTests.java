@@ -21,13 +21,14 @@ class PopConfirmTests extends BaseTest {
     @ValueSource(strings = {"Yes", "No"})
     void verifyPop(String input) {
         page.navigate(url);
-        String deleteButton = "//button[contains(concat(' ',normalize-space(@class),' '),' ant-btn-dangerous ')][span[normalize-space(text())='Delete']]";
+        String deleteButton = "(//div[.//text()[normalize-space()='Pop confirm']]//button[contains(concat(' ',normalize-space(@class),' '),' ant-btn-dangerous ')][span[normalize-space(text())='Delete']])[1]";
         page.locator(deleteButton).click();
 
         String optionXpath = String.format("//div[contains(concat(' ',normalize-space(@class),' '),' ant-popconfirm-inner-content ') and .//div[normalize-space(text())='Delete the task']]" +
                 "//button[.//text()[normalize-space()='%s']]", input);
         page.locator(optionXpath).click();
 
-        assertThat(page.locator("//div[contains(concat(' ',normalize-space(@class),' '),' ant-message-notice-content ')]")).hasText(String.format("Click on %s", input));
+        assertThat(page.locator("//div[contains(concat(' ',normalize-space(@class),' '),' ant-message-notice-content ')]//span[contains(text(), 'Click on')]")).hasText(String.format("Click on %s", input));
+        //cái div này có @role='tooltip' có thể dùng thay vì dùng class nó dài
     }
 }
