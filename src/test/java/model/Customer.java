@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -15,7 +14,7 @@ import java.util.Objects;
 public class Customer {
     private String name;
     private String address;
-    private String age;
+    private int age;
     private String tags;
 
     @Override

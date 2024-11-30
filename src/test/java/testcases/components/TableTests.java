@@ -45,7 +45,7 @@ class TableTests extends BaseTest {
                 "//tr//td[contains(concat(' ',normalize-space(@class),' '),' ant-table-cell ')][%d]", indexOfAddress+1);
         Locator addresses = page.locator(addressXpath);
         String[] addressList = addresses.allInnerTexts().toArray(new String[0]);
-        assertTrue(addressList.length == 10);
+        assertEquals(10, addressList.length);
 
         //Verify pagination
         String paginationXpath = "//li[contains(concat(' ',normalize-space(@class),' '),' ant-pagination-item ')]";
@@ -67,30 +67,28 @@ class TableTests extends BaseTest {
         int ageIndex = Arrays.asList(headerList).indexOf("Age")+1;
         int tagsIndex = Arrays.asList(headerList).indexOf("Tags")+1;
 
-        String cellBodyXpath = "//tbody[contains(concat(' ',normalize-space(@class),' '),' ant-table-tbody ')]//tr[@data-row-key='%d']//td[contains(concat(' ',normalize-space(@class),' '),' ant-table-cell ')][%d]";
+        String cellXpath = "//tbody[contains(concat(' ',normalize-space(@class),' '),' ant-table-tbody ')]//tr[@data-row-key='%d']//td[contains(concat(' ',normalize-space(@class),' '),' ant-table-cell ')][%d]";
         String rowsXpath = "//tbody[contains(concat(' ',normalize-space(@class),' '),' ant-table-tbody ')]//tr[contains(concat(' ',normalize-space(@class),' '),' ant-table-row ')]";
         Locator rows = page.locator(rowsXpath);
-        int rowCount = rows.count();
         ArrayList<Customer> actualCustomer = new ArrayList<>();
         String nextButtonXpath = "//li[contains(concat(' ',normalize-space(@class),' '),' ant-pagination-next ')]";
         for(int rowNum = 1; true ; rowNum++){
-            if(page.locator(String.format(cellBodyXpath, rowNum, nameIndex)).count() == 0){
+            if(page.locator(String.format(cellXpath, rowNum, nameIndex)).count() == 0){
                 break;
             }
 
             Customer customer = new Customer();
-            customer.setName(page.locator(String.format(cellBodyXpath, rowNum, nameIndex)).innerText());
-            customer.setAddress(page.locator(String.format(cellBodyXpath, rowNum, addressIndex)).innerText());
-            customer.setAge(page.locator(String.format(cellBodyXpath, rowNum, ageIndex)).innerText());
-            customer.setTags(page.locator(String.format(cellBodyXpath, rowNum, tagsIndex)).innerText());
+            customer.setName(page.locator(String.format(cellXpath, rowNum, nameIndex)).innerText());
+            customer.setAddress(page.locator(String.format(cellXpath, rowNum, addressIndex)).innerText());
+            customer.setAge(Integer.parseInt(page.locator(String.format(cellXpath, rowNum, ageIndex)).innerText()));
+            customer.setTags(page.locator(String.format(cellXpath, rowNum, tagsIndex)).innerText());
             actualCustomer.add(customer);
 
             if(rowNum%rows.count() == 0){
                 Locator nextButton = page.locator(nextButtonXpath);
-                boolean isNext = !Boolean.parseBoolean(nextButton.getAttribute("aria-disabled"));
-                if(isNext){
+                boolean isNextButtonEnable = !Boolean.parseBoolean(nextButton.getAttribute("aria-disabled"));
+                if(isNextButtonEnable){
                     nextButton.click();
-                    rowCount = rowCount + rows.count();
                 } else {
                     break;
                 }
@@ -98,7 +96,7 @@ class TableTests extends BaseTest {
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
-        List<Customer> expectedCustomers = objectMapper.readValue(CUSTOMERS_EXPECTED_DATA, new TypeReference<List<Customer>>() {}) ;
+        List<Customer> expectedCustomers = objectMapper.readValue(CUSTOMERS_EXPECTED_DATA, new TypeReference<>() {}) ;
 
         boolean isActualContainAllExpected = actualCustomer.containsAll(expectedCustomers);
         assertTrue(isActualContainAllExpected);
@@ -107,50 +105,81 @@ class TableTests extends BaseTest {
     }
 
     @Test
-    void verifyTable2ndWay() throws InterruptedException {
+    void verifyTable2ndWay() throws InterruptedException, JsonProcessingException {
         page.navigate(url);
         Thread.sleep(2000);
-        String headersXpath = "//thead[contains(concat(' ',normalize-space(@class),' '),' ant-table-thead ')]" +
-                "//th[contains(concat(' ',normalize-space(@class),' '),' ant-table-cell ')]";
+        String tableXpath = "(//div[.//text()[normalize-space()='Table']]//following::table)[1]";  //This is just to make sure if there are 2 tables, this is better than the 1st way above
+        String headersXpath = String.format("%s//th[contains(concat(' ',normalize-space(@class),' '),' ant-table-cell ')]", tableXpath);
         String[] headerList = page.locator(headersXpath).allInnerTexts().toArray(new String[0]);
-        String cellXpath = "";
-        String rowDataXpath = "//tbody[contains(concat(' ',normalize-space(@class),' '),' ant-table-tbody ')]//tr[contains(concat(' ',normalize-space(@class),' '),' ant-table-row ')]";
+        String rowsXpath = String.format("%s//tr[contains(concat(' ',normalize-space(@class),' '),' ant-table-row ')]", tableXpath);
+        String nextButtonXpath = "//li[contains(concat(' ',normalize-space(@class),' '),' ant-pagination-next ')]";
+        List<Customer> actualCustomer = new ArrayList<>();
+        boolean isNextButtonEnable;
 
-        List<Locator> rowLocators = page.locator(rowDataXpath).all();
-        List<Customer> customers = new ArrayList<>();
-        for (Locator row : rowLocators){
-            Customer customer = new Customer();
-            int indexOfName = Arrays.asList(headerList).indexOf("Name");
-            String cellNameLocator = String.format("", indexOfName);
-            String name = row.locator(cellNameLocator).textContent();
-            customer.setName(name);
+        do {
+            List<Locator> rowLocators = page.locator(rowsXpath).all();
+            for (Locator row : rowLocators) {
+                Customer customer = new Customer();
+//                int indexOfName = Arrays.asList(headerList).indexOf("Name");
+//                String cellNameLocator = String.format("//td[contains(concat(' ',normalize-space(@class),' '),' ant-table-cell ')][%d]", indexOfName + 1);
+//                String name = row.locator(cellNameLocator).textContent();
+//                customer.setName(name);
+//
+//                int indexOfAge = Arrays.asList(headerList).indexOf("Age");
+//                String cellAgeLocator = String.format("//td[contains(concat(' ',normalize-space(@class),' '),' ant-table-cell ')][%d]", indexOfAge + 1);
+//                int age = Integer.parseInt(row.locator(cellAgeLocator).textContent());
+//                customer.setAge(age);
+//
+//                int indexOfAddress = Arrays.asList(headerList).indexOf("Address");
+//                String cellAddressLocator = String.format("//td[contains(concat(' ',normalize-space(@class),' '),' ant-table-cell ')][%d]", indexOfAddress + 1);
+//                String address = row.locator(cellAddressLocator).textContent();
+//                customer.setAddress(address);
+//
+//                int indexOfTags = Arrays.asList(headerList).indexOf("Tags");
+//                String cellTagsLocator = String.format("//td[contains(concat(' ',normalize-space(@class),' '),' ant-table-cell ')][%d]", indexOfTags + 1);
+//                String tags = row.locator(cellTagsLocator).textContent();
+//                customer.setTags(tags);
 
-            int indexOfAge = Arrays.asList(headerList).indexOf("Age");
-            String cellAgeLocator = String.format("", indexOfAge);
-            String age = row.locator(cellAgeLocator).textContent();
-            customer.setName(age);
+                for(String header : headerList){
+                    int indexOfHeader = Arrays.asList(headerList).indexOf(header);
+                    String headerXpath = String.format("//td[contains(concat(' ',normalize-space(@class),' '),' ant-table-cell ')][%d]", indexOfHeader + 1);
+                    String headerValue = row.locator(headerXpath).textContent();
+                    switch (header){
+                        case "Name":
+                            customer.setName(headerValue);
+                            break;
+                        case "Age":
+                            customer.setAge(Integer.parseInt(headerValue));
+                            break;
+                        case "Address":
+                            customer.setAddress(headerValue);
+                            break;
+                        case "Tags":
+                            customer.setTags(headerValue);
+                            break;
+                        default:
+                            break;
+                    }
+                }
 
-            int indexOfAddress = Arrays.asList(headerList).indexOf("Address");
-            String cellAddressLocator = String.format("", indexOfAddress);
-            String address = row.locator(cellAddressLocator).textContent();
-            customer.setName(address);
+                actualCustomer.add(customer);
+            }
+            Locator nextButton = page.locator(nextButtonXpath);
+            isNextButtonEnable = !Boolean.parseBoolean(nextButton.getAttribute("aria-disabled"));
+            if(isNextButtonEnable){
+                nextButton.click();
+            }
+        } while (isNextButtonEnable);
 
-            int indexOfTags = Arrays.asList(headerList).indexOf("Tags");
-            String cellTagsLocator = String.format("", indexOfTags);
-            String tags = row.locator(cellTagsLocator).textContent();
-            customer.setName(tags);
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Customer> expectedCustomers = objectMapper.readValue(CUSTOMERS_EXPECTED_DATA, new TypeReference<>() {}) ;
 
-            customers.add(customer);
-        }
-
-
-        for(Customer customer:customers){
-            System.out.println(customer.toString());
-        }
-
-
-        String nextButtonXpath = "";
-
-
+        boolean isActualContainAllExpected = actualCustomer.containsAll(expectedCustomers);
+        assertTrue(isActualContainAllExpected);
+        boolean isExpectedContainsAllActual = expectedCustomers.containsAll(actualCustomer);
+        assertTrue(isExpectedContainsAllActual);
     }
+    //So there is 2 ways to loop the rows
+    //1st is to loop infinity until the next row is not exist, and go to the next page when (curRowIndex % numberOfRows == 0)
+    //2nd way to loop each row in list<row> rows, and click next page when last row went through
 }
