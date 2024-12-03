@@ -4,7 +4,7 @@ import com.microsoft.playwright.Locator;
 import org.junit.jupiter.api.Test;
 import testcases.BaseTest;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
@@ -66,50 +66,49 @@ public class DragAndDropTests extends BaseTest {
     @Test
     void verifyDragAndDrop2ndWay() throws InterruptedException {
         page.navigate(url);
-
         String leftPanelXpath = "(//div[.//text()[normalize-space()='Drag n Drop']]//following::div[contains(concat(' ',normalize-space(@class),' '),' ant-space ')])[1]//div[contains(concat(' ',normalize-space(@class),' '),' ant-space-item ')][1]";
         String rightPanelXpath = "(//div[.//text()[normalize-space()='Drag n Drop']]//following::div[contains(concat(' ',normalize-space(@class),' '),' ant-space ')])[1]//div[contains(concat(' ',normalize-space(@class),' '),' ant-space-item ')][2]";
         Locator leftPanelLocator = page.locator(leftPanelXpath);
         Locator rightPanelLocator = page.locator(rightPanelXpath);
+        List<String> curLeftItems = leftPanelLocator.locator("//button").allTextContents();
+        List<String> curRightItems = rightPanelLocator.locator("//button").allTextContents();
+        ///----------------------------------------------------------------------------///
 
         //Move to right
         String inputToRight = "Apple > Banane";
         String[] itemMoveToRight = inputToRight.split("\\s*>\\s*");
-        for(String item : itemMoveToRight){
-            String itemXpath = String.format("(//div[.//text()[normalize-space()='Drag n Drop']]//following::div[contains(concat(' ',normalize-space(@class),' '),' ant-space ')])[1]//button[.//text()[normalize-space()='%s']]", item);
-            page.locator(itemXpath).dragTo(rightPanelLocator);
-        }
-
-        //Assert Left
-        List<String> expectedCurLeftItems = List.of("Orange", "Peach");
-        List<String> actualCurLeftItems = leftPanelLocator.locator("//button").allTextContents();
-        assertTrue(expectedCurLeftItems.containsAll(actualCurLeftItems));
-        assertTrue(actualCurLeftItems.containsAll(expectedCurLeftItems));
-
-        //Assert Right
-        List<String> expectedCurRightItems = List.of("Strawberry", "Mango", "Pineapple", "Grapes", "Apple", "Banane");
-        List<String> actualCurRightItems = rightPanelLocator.locator("//button").allTextContents();
-        assertTrue(expectedCurRightItems.containsAll(actualCurRightItems));
-        assertTrue(actualCurRightItems.containsAll(expectedCurRightItems));
+        verifyPanel(itemMoveToRight, leftPanelLocator, rightPanelLocator);
+        //Verify Left Panel
+        curLeftItems.removeAll(Arrays.asList(itemMoveToRight));
+        verifyPanel(leftPanelLocator, curLeftItems);
+        //Verify Right Panel
+        curRightItems.addAll(Arrays.asList(itemMoveToRight));
+        verifyPanel(rightPanelLocator, curRightItems);
+        ///----------------------------------------------------------------------------///
 
         //Move to left
         String inputToLeft = "Mango > Grapes";
         String[] itemMoveToLeft = inputToLeft.split("\\s*>\\s*");
-        for(String item : itemMoveToLeft){
-            String itemXpath = String.format("(//div[.//text()[normalize-space()='Drag n Drop']]//following::div[contains(concat(' ',normalize-space(@class),' '),' ant-space ')])[1]//button[.//text()[normalize-space()='%s']]", item);
-            page.locator(itemXpath).dragTo(leftPanelLocator);
+        verifyPanel(itemMoveToLeft, rightPanelLocator, leftPanelLocator);
+        //Verify Left Panel
+        curLeftItems.addAll(Arrays.asList(itemMoveToLeft));
+        verifyPanel(leftPanelLocator, curLeftItems);
+        //Verify Right Panel
+        curRightItems.removeAll(Arrays.asList(itemMoveToLeft));
+        verifyPanel(rightPanelLocator, curRightItems);
+
+    }
+
+    private static void verifyPanel(String[] itemToMove, Locator from, Locator to) {
+        for(String item : itemToMove){
+            String itemXpath = String.format("//button[.//text()[normalize-space()='%s']]", item);
+            from.locator(itemXpath).dragTo(to);
         }
+    }
 
-        //Assert Left
-        expectedCurLeftItems = List.of("Orange", "Peach", "Mango", "Grapes");
-        actualCurLeftItems = leftPanelLocator.locator("//button").allTextContents();
-        assertTrue(expectedCurLeftItems.containsAll(actualCurLeftItems));
-        assertTrue(actualCurLeftItems.containsAll(expectedCurLeftItems));
-
-        //Assert Right
-        expectedCurRightItems = List.of("Strawberry", "Pineapple", "Apple", "Banane");
-        actualCurRightItems = rightPanelLocator.locator("//button").allTextContents();
-        assertTrue(expectedCurRightItems.containsAll(actualCurRightItems));
-        assertTrue(actualCurRightItems.containsAll(expectedCurRightItems));
+    private static void verifyPanel(Locator panelLocator, List<String> expectedCurItems) {
+        List<String> actualCurItems = panelLocator.locator("//button").allTextContents();
+        assertTrue(expectedCurItems.containsAll(actualCurItems));
+        assertTrue(actualCurItems.containsAll(expectedCurItems));
     }
 }
