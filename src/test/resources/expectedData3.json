@@ -1,0 +1,23 @@
+[
+  {
+    "Full Name": "",
+    "Email": "",
+    "Phone Number": "",
+    "Date of Birth": "",
+    "Address": ""
+  },
+  {
+    "Full Name": "Please input your full name!",
+    "Email": "Please input your email!",
+    "Phone Number": "Please input your phone number!",
+    "Date of Birth": "Please select your date of birth!You must be at least 18 years old!",
+    "Address": "Please input your address!"
+  },
+  {
+    "Full Name": "Please input your full name!",
+    "Email": "Please input your email!",
+    "Phone Number": "Please input your phone number!",
+    "Date of Birth": "Please select your date of birth!You must be at least 18 years old!",
+    "Address": "Please input your address!"
+  }
+]

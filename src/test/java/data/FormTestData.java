@@ -1,5 +1,8 @@
 package data;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class FormTestData {
     public static String FORM_VALIDATION_DATA = """
             [
@@ -71,4 +74,32 @@ public class FormTestData {
               }
             ]
             """;
+
+    public static String FORM_VALID_DATA = String.format("""
+            [
+               {
+                 "Full Name": "Pham Anh Duc",
+                 "Email": "duc.total650@gmail.com",
+                 "Phone Number": "0808008008",
+                 "Date of Birth": "2000-01-01",
+                 "Address": "HCM"
+               },
+               {
+                 "Full Name": "total650",
+                 "Email": "duc@edu.vn",
+                 "Phone Number": "1111111111",
+                 "Date of Birth": "%s",
+                 "Address": "Please input your address!",
+                 "Occupation": "meow",
+                 "Company": "cat"
+               }
+             ]
+            """, getValidBoundaryBirth());
+
+    private static String getValidBoundaryBirth(){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate today = LocalDate.now();
+        String validBoundaryBirth = dateTimeFormatter.format(today.minusYears(18));
+        return validBoundaryBirth;
+    }
 }
