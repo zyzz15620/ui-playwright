@@ -58,7 +58,6 @@ public class FormTests extends BaseTest {
     @MethodSource("formValidData")
     void verifyFormValidCases(Map<String, String> data) throws InterruptedException {
         page.navigate(url);
-
         //Filling form and click Submit
         for(Map.Entry<String, String> entry : data.entrySet()){
             String inputXpath =String.format("(//div[.//text()[normalize-space()='Common button type']]//following::input[.//preceding::div//label[contains(text(),'%s')]])[1]", entry.getKey());
